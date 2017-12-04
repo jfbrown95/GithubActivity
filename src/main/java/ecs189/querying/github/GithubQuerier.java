@@ -34,6 +34,11 @@ public class GithubQuerier {
             Date date = inFormat.parse(creationDate);
             String formatted = outFormat.format(date);
 
+            // Get Commits
+            JSONObject payload = event.getJSONObject("payload");
+            JSONArray commits = payload.getJSONArray("commits");
+
+
             // Add type of event as header
             sb.append("<h3 class=\"type\">");
             sb.append(type);
@@ -47,6 +52,21 @@ public class GithubQuerier {
             sb.append("<div id=event-" + i + " class=\"collapse\" style=\"height: auto;\"> <pre>");
             sb.append(event.toString());
             sb.append("</pre> </div>");
+
+            // Show Commits Vertically
+            for(int j=0; j < commits.length(); j++) {
+                JSONObject commit = commits.getJSONObject(j);
+                // Get the sha id
+                String sha = commit.getString("sha");
+                String message = commit.getString("message");
+                sb.append(" <ul>");
+                sb.append(sha);
+                sb.append(" </ul>");
+                sb.append(" <ul> ");
+                sb.append(message);
+                sb.append(" </ul>");
+
+            }
         }
         sb.append("</div>");
         return sb.toString();
@@ -59,8 +79,15 @@ public class GithubQuerier {
         JSONObject json = Util.queryAPI(new URL(url));
         System.out.println(json);
         JSONArray events = json.getJSONArray("root");
-        for (int i = 0; i < events.length() && i < 10; i++) {
-            eventList.add(events.getJSONObject(i));
+        for (int i = 0; i < events.length(); i++) {
+            // Get the event
+            JSONObject event = events.getJSONObject(i);
+            // convert to string
+            String type = event.getString("type");
+            if(type.equals("PushEvent")) {
+                eventList.add(events.getJSONObject(i));
+            }
+            if(eventList.size() == 10) break;
         }
         return eventList;
     }
