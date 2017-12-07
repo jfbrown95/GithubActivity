@@ -60,10 +60,10 @@ public class GithubQuerier {
                 String sha = commit.getString("sha");
                 String message = commit.getString("message");
                 sb.append(" <ul>");
-                sb.append(sha);
+                sb.append("sha: " + sha);
                 sb.append(" </ul>");
                 sb.append(" <ul> ");
-                sb.append(message);
+                sb.append("commit: "+ message);
                 sb.append(" </ul>");
 
             }
