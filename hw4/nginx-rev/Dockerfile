@@ -45,3 +45,5 @@ EXPOSE 8888
 # Set the default command to execute
 # when creating a new container
 CMD ["/usr/sbin/nginx"]
+
+#CMD service nginx start

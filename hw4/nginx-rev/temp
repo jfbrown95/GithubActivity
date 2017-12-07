@@ -1,0 +1,4 @@
+
+docker run --network="ecs189_default" --name web2 -d activity2
+docker exec ecs189_proxy_1 /bin/bash /bin/swap2.sh
+killitif web1

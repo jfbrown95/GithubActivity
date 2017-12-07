@@ -5,6 +5,11 @@ services:
      - "8080"
     image: activity
 
+ # web2:
+ #   ports:
+ #     - "8040"
+ #   image: activity2
+
   proxy:
     ports:
      - "8888:8888"
