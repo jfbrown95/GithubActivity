@@ -74,20 +74,32 @@ public class GithubQuerier {
 
     private static List<JSONObject> getEvents(String user) throws IOException {
         List<JSONObject> eventList = new ArrayList<JSONObject>();
-        String url = BASE_URL + user + "/events";
-        System.out.println(url);
-        JSONObject json = Util.queryAPI(new URL(url));
-        System.out.println(json);
-        JSONArray events = json.getJSONArray("root");
-        for (int i = 0; i < events.length(); i++) {
-            // Get the event
-            JSONObject event = events.getJSONObject(i);
-            // convert to string
-            String type = event.getString("type");
-            if(type.equals("PushEvent")) {
-                eventList.add(events.getJSONObject(i));
+        int page = 0;
+        while(page < 11) { // Max pagination allows us to access
+            // Create the url
+            String url = BASE_URL + user + "/events?page=" + page;
+            System.out.println(url);
+
+            // Make the query
+            JSONObject json = Util.queryAPI(new URL(url));
+            System.out.println(json);
+
+            // format the return value
+            JSONArray events = json.getJSONArray("root");
+            if(events.length() == 0) return eventList;
+
+            for (int i = 0; i < events.length(); i++) {
+                // Get the event
+                JSONObject event = events.getJSONObject(i);
+                // convert to string
+                String type = event.getString("type");
+                if (type.equals("PushEvent")) {
+                    eventList.add(events.getJSONObject(i));
+                }
+                // We've got our data
+                if (eventList.size() == 10) return eventList;
             }
-            if(eventList.size() == 10) break;
+            page++;
         }
         return eventList;
     }
